@@ -26,9 +26,7 @@ func ReadCSVFile(filePath string) (gameSalesHistories []dao.GameSalesHistory) {
 
 			continue
 		}
-		gameSalesHistories = append(gameSalesHistories, dao.GameSalesHistory{
-			Publisher: record[headerMap["Year"]],
-		})
+		gameSalesHistories = append(gameSalesHistories, dao.ConvertToGameSalesHistory(record, headerMap))
 	}
 	return
 }
