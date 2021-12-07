@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"MainService/controllers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,5 +25,6 @@ func CORSMiddleware() gin.HandlerFunc {
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
+	r.GET("/csv/", controllers.InsertCSV)
 	return r
 }
