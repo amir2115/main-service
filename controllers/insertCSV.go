@@ -2,12 +2,13 @@ package controllers
 
 import (
 	"MainService/dal"
+	"MainService/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func InsertCSV(c *gin.Context) {
-	filepath := "assets/vgsales.csv"
+	filepath := utils.CSV_ADDRESS
 	gameHistoryList := dal.ReadCSVFile(filepath)
 	dal.CreateAllGameHistories(gameHistoryList)
 	gameSalesHistoriesDB := dal.GetAllGameHistories()

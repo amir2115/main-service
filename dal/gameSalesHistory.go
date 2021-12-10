@@ -3,11 +3,14 @@ package dal
 import (
 	"MainService/config"
 	"MainService/dao"
+	"fmt"
+	"strconv"
 )
 
 func CreateAllGameHistories(gameSalesHistories []dao.GameSalesHistory) {
-	for _, history := range gameSalesHistories {
+	for i, history := range gameSalesHistories {
 		config.DB.Create(&history)
+		fmt.Println(strconv.Itoa(i) + "/" + strconv.Itoa(len(gameSalesHistories)))
 	}
 }
 

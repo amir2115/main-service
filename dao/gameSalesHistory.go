@@ -19,13 +19,13 @@ type GameSalesHistory struct {
 func ConvertToGameSalesHistory(record []string, headerMap map[string]int) GameSalesHistory {
 	rank, err := strconv.Atoi(record[headerMap["Rank"]])
 	year, err := strconv.Atoi(record[headerMap["Year"]])
-	NASales, err := strconv.Atoi(record[headerMap["NA_Sales"]])
-	EUSales, err := strconv.Atoi(record[headerMap["EU_Sales"]])
-	JPSales, err := strconv.Atoi(record[headerMap["JP_Sales"]])
-	OtherSales, err := strconv.Atoi(record[headerMap["Other_Sales"]])
-	GlobalSales, err := strconv.Atoi(record[headerMap["Global_Sales"]])
+	NASales, err := strconv.ParseFloat(record[headerMap["NA_Sales"]], 64)
+	EUSales, err := strconv.ParseFloat(record[headerMap["EU_Sales"]], 64)
+	JPSales, err := strconv.ParseFloat(record[headerMap["JP_Sales"]], 64)
+	OtherSales, err := strconv.ParseFloat(record[headerMap["Other_Sales"]], 64)
+	GlobalSales, err := strconv.ParseFloat(record[headerMap["Global_Sales"]], 64)
 	if err != nil {
-		panic("ConvertToGameSalesHistory")
+		panic(err.Error())
 	}
 	return GameSalesHistory{
 		Rank:        uint(rank),
