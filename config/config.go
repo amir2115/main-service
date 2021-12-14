@@ -1,6 +1,7 @@
 package config
 
 import (
+	"MainService/dao"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
@@ -14,6 +15,8 @@ func ConnectDatabase() {
 		panic(err.Error())
 	}
 
-	database.AutoMigrate()
+	database.AutoMigrate(
+		&dao.GameSalesHistory{},
+	)
 	DB = database
 }
