@@ -3,6 +3,7 @@ package dao
 import "strconv"
 
 type GameSalesHistory struct {
+	ID          uint    `json:"id"`
 	Rank        uint    `json:"rank"`
 	Name        string  `json:"name"`
 	Platform    string  `json:"platform"`
