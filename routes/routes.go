@@ -26,13 +26,14 @@ func CORSMiddleware() gin.HandlerFunc {
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
-	r.GET("/csv/", middleware.Authentication(), controllers.InsertCSV)
-	r.GET("/game_rank/:rank/", middleware.Authentication(), controllers.GetAllGameHistoriesByRank)
-	r.GET("/game_name/:name/", middleware.Authentication(), controllers.SearchByName)
-	r.GET("/game_platform/:length/", middleware.Authentication(), controllers.GetAllGameHistoriesByPlatform)
-	r.GET("/game_year/:year/:length/", middleware.Authentication(), controllers.GetAllGameHistoriesByYear)
-	r.GET("/game_genre/:genre/:length/", middleware.Authentication(), controllers.GetAllGameHistoriesByGenre)
-	r.GET("/top_five/:year/:platform/", middleware.Authentication(), controllers.GetTopFiveGamesByYear)
-	r.GET("/na_eu_sales/", middleware.Authentication(), controllers.NAVsEU)
+	r.Use(middleware.Authentication())
+	r.GET("/csv/", controllers.InsertCSV)
+	r.GET("/game_rank/:rank/", controllers.GetAllGameHistoriesByRank)
+	r.GET("/game_name/:name/", controllers.SearchByName)
+	r.GET("/game_platform/:length/", controllers.GetAllGameHistoriesByPlatform)
+	r.GET("/game_year/:year/:length/", controllers.GetAllGameHistoriesByYear)
+	r.GET("/game_genre/:genre/:length/", controllers.GetAllGameHistoriesByGenre)
+	r.GET("/top_five/:year/:platform/", controllers.GetTopFiveGamesByYear)
+	r.GET("/na_eu_sales/", controllers.NAVsEU)
 	return r
 }
