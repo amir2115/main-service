@@ -2,6 +2,7 @@ package routes
 
 import (
 	"MainService/controllers"
+	"MainService/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,13 +26,13 @@ func CORSMiddleware() gin.HandlerFunc {
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
-	r.GET("/csv/", controllers.InsertCSV)
-	r.GET("/rank/:rank/", controllers.GetAllGameHistoriesByRank)
-	r.POST("/search_by_name/", controllers.SearchByName)
-	r.GET("/platform/:length/", controllers.GetAllGameHistoriesByPlatform)
-	r.GET("/year/:length/", controllers.GetAllGameHistoriesByYear)
-	r.GET("/category/:length/", controllers.GetAllGameHistoriesByCategory)
-	r.POST("/global_sales/", controllers.GetAllGameHistoriesByGlobalSales)
-	r.GET("/na_eu_sales/", controllers.GetAllGameHistoriesByNaEuSales)
+	r.GET("/csv/", middleware.Authentication(), controllers.InsertCSV)
+	r.GET("/rank/:rank/", middleware.Authentication(), controllers.GetAllGameHistoriesByRank)
+	r.POST("/search_by_name/", middleware.Authentication(), controllers.SearchByName)
+	r.GET("/platform/:length/", middleware.Authentication(), controllers.GetAllGameHistoriesByPlatform)
+	r.GET("/year/:length/", middleware.Authentication(), controllers.GetAllGameHistoriesByYear)
+	r.GET("/category/:length/", middleware.Authentication(), controllers.GetAllGameHistoriesByCategory)
+	r.POST("/global_sales/", middleware.Authentication(), controllers.GetAllGameHistoriesByGlobalSales)
+	r.GET("/na_eu_sales/", middleware.Authentication(), controllers.GetAllGameHistoriesByNaEuSales)
 	return r
 }
