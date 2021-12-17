@@ -3,6 +3,7 @@ package dal
 import (
 	"MainService/config"
 	"MainService/dao"
+	"MainService/utils"
 	"fmt"
 	"strconv"
 )
@@ -20,7 +21,7 @@ func GetAllGameHistories() []dao.GameSalesHistory {
 	return gameSalesHistories
 }
 
-func GetAllGameHistoriesByRank(rank uint) []dao.GameSalesHistory {
+func GetGameHistoryByRank(rank uint) []dao.GameSalesHistory {
 	var gameSalesHistories []dao.GameSalesHistory
 	config.DB.Where(&dao.GameSalesHistory{Rank: rank}).Find(&gameSalesHistories)
 	return gameSalesHistories
@@ -28,31 +29,35 @@ func GetAllGameHistoriesByRank(rank uint) []dao.GameSalesHistory {
 
 func GetAllGameHistoriesByPlatform(length int) []dao.GameSalesHistory {
 	var gameSalesHistories []dao.GameSalesHistory
-	config.DB.Limit(length).Offset(0).Order("platform desc").Find(&gameSalesHistories)
+	for _, platform := range utils.PlatformNames {
+		var temp []dao.GameSalesHistory
+		config.DB.Limit(length).Offset(0).Where("platform = ?", platform).Order("`rank`").Find(&temp)
+		gameSalesHistories = append(gameSalesHistories, temp...)
+	}
 	return gameSalesHistories
 }
 
-func GetAllGameHistoriesByYear(length int) []dao.GameSalesHistory {
+func GetAllGameHistoriesByYear(length int, year int) []dao.GameSalesHistory {
 	var gameSalesHistories []dao.GameSalesHistory
-	config.DB.Limit(length).Offset(0).Order("year desc").Find(&gameSalesHistories)
+	config.DB.Limit(length).Offset(0).Where("year = ?", year).Order("`rank`").Find(&gameSalesHistories)
 	return gameSalesHistories
 }
 
-func GetAllGameHistoriesByCategory(length int) []dao.GameSalesHistory {
+func GetAllGameHistoriesByGenre(length int, genre string) []dao.GameSalesHistory {
 	var gameSalesHistories []dao.GameSalesHistory
-	config.DB.Limit(length).Offset(0).Order("genre").Find(&gameSalesHistories)
+	config.DB.Limit(length).Offset(0).Where("genre = ?", genre).Order("`rank`").Find(&gameSalesHistories)
 	return gameSalesHistories
 }
 
-func GetAllGameHistoriesByGlobalSales(platform string, year int) []dao.GameSalesHistory {
+func GetTopFiveGamesByYear(platform string, year int) []dao.GameSalesHistory {
 	var gameSalesHistories []dao.GameSalesHistory
-	config.DB.Limit(5).Offset(0).Where(&dao.GameSalesHistory{Platform: platform, Year: year}).Order("global_sales desc").Find(&gameSalesHistories)
+	config.DB.Limit(5).Offset(0).Where("year = ? AND platform = ?", year, platform).Order("global_sales desc").Find(&gameSalesHistories)
 	return gameSalesHistories
 }
 
-func GetAllGameHistoriesByNaEuSales() []dao.GameSalesHistory {
+func NAVsEU() []dao.GameSalesHistory {
 	var gameSalesHistories []dao.GameSalesHistory
-	config.DB.Limit(5).Offset(0).Order("global_sales desc").Find(&gameSalesHistories)
+	config.DB.Where("eu_sales > na_sales").Find(&gameSalesHistories)
 	return gameSalesHistories
 }
 

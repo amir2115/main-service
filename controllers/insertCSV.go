@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"MainService/dal"
-	"MainService/dao"
 	"MainService/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -13,7 +12,7 @@ func InsertCSV(c *gin.Context) {
 	gameHistoryList := dal.ReadCSVFile(filepath)
 	dal.CreateAllGameHistories(gameHistoryList)
 	gameSalesHistoriesDB := dal.GetAllGameHistories()
-	c.JSON(http.StatusBadRequest, gameSalesHistoriesDB)
+	c.JSON(http.StatusOK, gameSalesHistoriesDB)
 }
 
 func GetAllGameHistoriesByRank(c *gin.Context) {
@@ -21,8 +20,8 @@ func GetAllGameHistoriesByRank(c *gin.Context) {
 	if !parsed {
 		return
 	}
-	gameSalesHistoriesDB := dal.GetAllGameHistoriesByRank(uint(rank))
-	c.JSON(http.StatusBadRequest, gameSalesHistoriesDB)
+	gameSalesHistoriesDB := dal.GetGameHistoryByRank(uint(rank))
+	c.JSON(http.StatusOK, gameSalesHistoriesDB)
 }
 
 func GetAllGameHistoriesByPlatform(c *gin.Context) {
@@ -31,7 +30,7 @@ func GetAllGameHistoriesByPlatform(c *gin.Context) {
 		return
 	}
 	gameSalesHistoriesDB := dal.GetAllGameHistoriesByPlatform(length)
-	c.JSON(http.StatusBadRequest, gameSalesHistoriesDB)
+	c.JSON(http.StatusOK, gameSalesHistoriesDB)
 }
 
 func GetAllGameHistoriesByYear(c *gin.Context) {
@@ -39,40 +38,41 @@ func GetAllGameHistoriesByYear(c *gin.Context) {
 	if !parsed {
 		return
 	}
-	gameSalesHistoriesDB := dal.GetAllGameHistoriesByYear(length)
-	c.JSON(http.StatusBadRequest, gameSalesHistoriesDB)
+	parsed, year := utils.GetParamUInt(c, "year")
+	if !parsed {
+		return
+	}
+	gameSalesHistoriesDB := dal.GetAllGameHistoriesByYear(length, year)
+	c.JSON(http.StatusOK, gameSalesHistoriesDB)
 }
 
-func GetAllGameHistoriesByCategory(c *gin.Context) {
+func GetAllGameHistoriesByGenre(c *gin.Context) {
 	parsed, length := utils.GetParamUInt(c, "length")
 	if !parsed {
 		return
 	}
-	gameSalesHistoriesDB := dal.GetAllGameHistoriesByCategory(length)
-	c.JSON(http.StatusBadRequest, gameSalesHistoriesDB)
+	genre := c.Param("genre")
+	gameSalesHistoriesDB := dal.GetAllGameHistoriesByGenre(length, genre)
+	c.JSON(http.StatusOK, gameSalesHistoriesDB)
 }
 
-func GetAllGameHistoriesByGlobalSales(c *gin.Context) {
-	var input dao.GlobalSales
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"messageCode": 403, "message": utils.Messages[403], "error": err.Error()})
+func GetTopFiveGamesByYear(c *gin.Context) {
+	parsed, year := utils.GetParamUInt(c, "year")
+	if !parsed {
 		return
 	}
-	gameSalesHistoriesDB := dal.GetAllGameHistoriesByGlobalSales(input.Platform, input.Year)
-	c.JSON(http.StatusBadRequest, gameSalesHistoriesDB)
+	platform := c.Param("platform")
+	gameSalesHistoriesDB := dal.GetTopFiveGamesByYear(platform, year)
+	c.JSON(http.StatusOK, gameSalesHistoriesDB)
 }
 
-func GetAllGameHistoriesByNaEuSales(c *gin.Context) {
-	gameSalesHistoriesDB := dal.GetAllGameHistoriesByNaEuSales()
-	c.JSON(http.StatusBadRequest, gameSalesHistoriesDB)
+func NAVsEU(c *gin.Context) {
+	gameSalesHistoriesDB := dal.NAVsEU()
+	c.JSON(http.StatusOK, gameSalesHistoriesDB)
 }
 
 func SearchByName(c *gin.Context) {
-	var input dao.SearchByName
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"messageCode": 403, "message": utils.Messages[403], "error": err.Error()})
-		return
-	}
-	gameSalesHistoriesDB := dal.SearchGameHistoriesByName(input.Name)
-	c.JSON(http.StatusBadRequest, gameSalesHistoriesDB)
+	name := c.Param("name")
+	gameSalesHistoriesDB := dal.SearchGameHistoriesByName(name)
+	c.JSON(http.StatusOK, gameSalesHistoriesDB)
 }
