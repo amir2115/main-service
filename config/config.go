@@ -33,7 +33,7 @@ type DBConfig struct {
 func BuildDBConfig() *DBConfig {
 	dbConfig := DBConfig{
 		Host:     os.Getenv("game_history_host_var"),
-		Port:     os.Getenv("game_history_port_var"),
+		Port:     int(os.Getenv("game_history_port_var")),
 		User:     "root",
 		Password: os.Getenv("game_history_pass_var"),
 		DBName:   os.Getenv("game_history_name_var"),
